@@ -1,0 +1,67 @@
+{
+	"info": {
+		"_postman_id": "c921eaf0-b498-41ea-835e-4bfd0624cf1f",
+		"name": "KS6 Docker",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Echo message",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set('_message', `It's ${new Date().toISOString()}`);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const json = pm.response.json();",
+							"const response = json?.data[Object.keys(json?.data || {})[0]];",
+							"",
+							"pm.test('Request succeeded', () => {",
+							"    pm.expect(pm.response.status === 'OK').to.be.true;",
+							"    pm.expect(!json.errors).to.be.true;",
+							"    pm.expect(!!response).to.be.true;",
+							"});",
+							"",
+							"pm.test('Response is message', () => {",
+							"    pm.expect(response === pm.collectionVariables.get('_message')).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query echo(\n    $message: String!\n) {\n    echo(\n        message: $message\n    )\n}",
+						"variables": "{\n    \"message\": \"{{_message}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{apiUrl}}",
+					"host": [
+						"{{apiUrl}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "_message",
+			"value": ""
+		}
+	]
+}

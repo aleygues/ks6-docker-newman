@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+    db:
+        image: postgres:13-alpine
+        environment:
+            - POSTGRES_USER=superuser
+            - POSTGRES_PASSWORD=supersecret
+            - POSTGRES_DB=dbname
+        volumes:
+            - /var/lib/postgresql/data
+    redis:
+        image: redis:alpine
+    app:
+        build:
+            context: .
+            target: prod
+        restart: on-failure
+        ports:
+            - 3200:3200
+        #command: npx keystone postinstall --fix
+        #command: npx keystone prisma db push --accept-data-loss
+        environment:
+            - SESSION_SECRET=RKqPJs562QKBguxhg3P23rzkp8j2PDPjLzQfdKHg

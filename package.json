@@ -1,0 +1,25 @@
+{
+  "name": "keystone6-docker",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "keystone dev",
+    "docker": "docker-compose up --build",
+    "dockerprod": "docker-compose -f docker-compose.prod.yml up --build",
+    "start": "keystone start",
+    "build": "keystone build",
+    "postinstall": "if-env SKIP_POSTINSTALL=1 && echo 'skipped' || keystone postinstall",
+    "test": "docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from newman --force-recreate -V"
+  },
+  "dependencies": {
+    "@keystone-6/auth": "^1.0.0",
+    "@keystone-6/cloudinary": "^1.0.0",
+    "@keystone-6/core": "^1.0.0",
+    "@keystone-6/document-renderer": "^1.0.0",
+    "@keystone-6/fields-document": "^1.0.0",
+    "@keystone-6/session-store-redis": "^1.0.0",
+    "date-fns": "^2.27.0",
+    "if-env": "^1.0.4",
+    "typescript": "^4.3.2"
+  }
+}

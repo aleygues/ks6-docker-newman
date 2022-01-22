@@ -1,0 +1,23 @@
+image: docker:19.03.12
+
+variables:
+  DOCKER_DRIVER: overlay2
+
+services:
+  - docker:19.03.12-dind
+
+stages:
+  - build-and-push
+
+before_script:
+  - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
+
+Build:
+  stage: build-and-push
+  only:
+    - tags
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker build --pull --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME --target prod .
+    - docker push $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME

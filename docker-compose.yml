@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+    db:
+        image: postgres:13-alpine
+        environment:
+            - POSTGRES_USER=superuser
+            - POSTGRES_PASSWORD=supersecret
+            - POSTGRES_DB=dbname
+        volumes:
+            - /var/lib/postgresql/data
+    redis:
+        image: redis:alpine
+        ports:
+            - 6379:6379
+    app:
+        build:
+            context: .
+            target: dev
+        restart: on-failure
+        # command: npx keystone prisma db push --accept-data-loss --force-reset
+        ports:
+            - 3200:3200
+            - 9222:9222
+        environment:
+            NODE_ENV: development
+        volumes:
+            - ./src:/app/src
+            - ./keystone.ts:/app/keystone.ts
+            - ./.keystone:/app/.keystone
+            - ./schema.graphql:/app/schema.graphql
+            - ./schema.prisma:/app/schema.prisma
+            # uncomment this to support uploaded files
+            # - ./uploads:/uploads
